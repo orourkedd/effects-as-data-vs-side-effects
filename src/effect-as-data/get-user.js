@@ -1,5 +1,6 @@
 const { isFailure, isSuccess, failure, success } = require('effects-as-data')
 const { readFile, httpGet, writeFile, jsonParse } = require('./actions')
+const { isInvalidGender } = require('./util')
 
 function * getUser (gender) {
   if (isInvalidGender(gender)) return failure('gender must be male or female.')
@@ -11,10 +12,6 @@ function * getUser (gender) {
   const user = yield httpGet(`https://randomuser.me/api/?gender=${gender}`)
   yield writeFile('/tmp/cached-user.json', JSON.stringify(user.payload), { encoding: 'utf8' })
   return user
-}
-
-function isInvalidGender (gender) {
-  return !['male', 'female'].includes(gender)
 }
 
 module.exports = {
