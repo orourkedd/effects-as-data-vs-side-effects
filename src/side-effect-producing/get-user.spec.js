@@ -1,6 +1,6 @@
 const { getUser } = require('./get-user')
 const { deepEqual } = require('assert')
-const sinon = require('sinon')
+const { stub, spy } = require('sinon')
 
 describe('getUser()', () => {
   describe('argument validation', () => {
@@ -18,10 +18,10 @@ describe('getUser()', () => {
   describe('on cache hit', () => {
     it('should return user from cache', () => {
       const user = { id: 123 }
-      const readFile = sinon.stub().returns(Promise.resolve(JSON.stringify(user)))
-      const fetch = sinon.stub()
-      const writeFile = sinon.spy()
-      const logError = sinon.spy()
+      const readFile = stub().returns(Promise.resolve(JSON.stringify(user)))
+      const fetch = stub()
+      const writeFile = spy()
+      const logError = spy()
 
       return getUser(fetch, readFile, writeFile, logError, 'male')
       .then((result) => {
@@ -34,12 +34,12 @@ describe('getUser()', () => {
   describe('on cache miss', () => {
     it('should cache miss, fetch user, set user in cache', () => {
       const user = { id: 123 }
-      const readFile = sinon.spy()
-      const fetch = sinon.stub().returns(Promise.resolve({
+      const readFile = spy()
+      const fetch = stub().returns(Promise.resolve({
         json: () => Promise.resolve(user)
       }))
-      const writeFile = sinon.spy()
-      const logError = sinon.spy()
+      const writeFile = spy()
+      const logError = spy()
 
       return getUser(fetch, readFile, writeFile, logError, 'male')
       .then(() => {
