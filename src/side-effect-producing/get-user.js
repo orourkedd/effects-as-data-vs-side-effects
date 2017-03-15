@@ -2,7 +2,7 @@ const { isInvalidGender } = require('./util')
 
 async function getUser (fetch, readFile, writeFile, logError, gender) {
   if (isInvalidGender(gender)) {
-    return Promise.reject(new TypeError('gender must be male or female.'));
+    throw new TypeError('gender must be male or female.');
   }
 
   let cached
