@@ -9,7 +9,7 @@ async function getUser (fetch, readFile, writeFile, logError, gender) {
   try {
     cached = await readFile('/tmp/cached-user.json', { encoding: 'utf8' })
   } catch (e) {
-    //  Do nothing for cache miss
+    logError(e)
   }
 
   try {
