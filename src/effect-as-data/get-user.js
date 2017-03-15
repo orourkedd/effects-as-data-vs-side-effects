@@ -4,13 +4,32 @@ const { isInvalidGender } = require('./util')
 
 function * getUser (gender) {
   if (isInvalidGender(gender)) return failure('gender must be male or female.')
-  const cached = yield readFile('/tmp/cached-user.json', { encoding: 'utf8' })
+  const cached = yield {
+    type: 'node',
+    module: 'fs',
+    function: 'readFile',
+    args: ['/tmp/cached-user.json', { encoding: 'utf8' }]
+  }
+
   if (cached.payload) {
-    const parsed = yield jsonParse(cached.payload)
+    const parsed = yield {
+      type: 'jsonParse',
+      payload: cached.payload
+    }
     if (isSuccess(parsed)) return parsed
   }
-  const user = yield httpGet(`https://randomuser.me/api/?gender=${gender}`)
-  yield writeFile('/tmp/cached-user.json', JSON.stringify(user.payload), { encoding: 'utf8' })
+  const user = yield {
+    type: 'httpGet',
+    url: `https://randomuser.me/api/?gender=${gender}`,
+    headers: {},
+    options: {}
+  }
+  yield {
+    type: 'node',
+    module: 'fs',
+    function: 'writeFile',
+    args: ['/tmp/cached-user.json', JSON.stringify(user.payload), { encoding: 'utf8' }]
+  }
   return user
 }
 
