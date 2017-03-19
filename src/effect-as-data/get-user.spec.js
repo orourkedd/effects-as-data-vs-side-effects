@@ -1,9 +1,6 @@
 const { getUser } = require('./get-user')
-const { failure, success } = require('effects-as-data')
+const { actions, failure, success } = require('effects-as-data/node')
 const { testIt } = require('effects-as-data/test')
-const { readFile, writeFile } = require('effects-as-data/lib/actions/node')
-const { httpGet } = require('effects-as-data-http').actions
-const { logError, jsonParse } = require('effects-as-data/lib/actions/standard')
 
 const testGetUser = testIt(getUser)
 
@@ -20,8 +17,8 @@ describe('getUser()', () => {
     it('should return user from cache', testGetUser(() => {
       const user = { id: 123 }
       return [
-        ['male', readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
-        [JSON.stringify(user), jsonParse(JSON.stringify(user))],
+        ['male', actions.readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
+        [JSON.stringify(user), actions.jsonParse(JSON.stringify(user))],
         [user, success(user)]
       ]
     }))
@@ -29,10 +26,10 @@ describe('getUser()', () => {
     it('should not return result from cache if invalid json', testGetUser(() => {
       const user = { id: 123 }
       return [
-        ['male', readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
-        ['invalid-json', jsonParse('invalid-json')],
-        [failure(), httpGet(`https://randomuser.me/api/?gender=male`)],
-        [user, writeFile('/tmp/cached-user.json', JSON.stringify(user), { encoding: 'utf8' })],
+        ['male', actions.readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
+        ['invalid-json', actions.jsonParse('invalid-json')],
+        [failure(), actions.httpGet(`https://randomuser.me/api/?gender=male`)],
+        [user, actions.writeFile('/tmp/cached-user.json', JSON.stringify(user), { encoding: 'utf8' })],
         [null, success(user)]
       ]
     }))
@@ -42,9 +39,9 @@ describe('getUser()', () => {
     it('should cache miss, fetch user, set user in cache', testGetUser(() => {
       const user = { id: 123 }
       return [
-        ['male', readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
-        [null, httpGet(`https://randomuser.me/api/?gender=male`)],
-        [user, writeFile('/tmp/cached-user.json', JSON.stringify(user), { encoding: 'utf8' })],
+        ['male', actions.readFile('/tmp/cached-user.json', { encoding: 'utf8' })],
+        [null, actions.httpGet(`https://randomuser.me/api/?gender=male`)],
+        [user, actions.writeFile('/tmp/cached-user.json', JSON.stringify(user), { encoding: 'utf8' })],
         [null, success(user)]
       ]
     }))

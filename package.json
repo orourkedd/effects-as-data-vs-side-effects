@@ -22,7 +22,7 @@
   "dependencies": {
     "babel-cli": "^6.24.0",
     "bluebird": "^3.5.0",
-    "effects-as-data": "^1.12.9",
+    "effects-as-data": "^1.12.13",
     "effects-as-data-http": "0.0.13",
     "isomorphic-fetch": "^2.2.1"
   }
