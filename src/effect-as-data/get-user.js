@@ -1,5 +1,5 @@
 const { isFailure, isSuccess, failure, success } = require('effects-as-data')
-const { readFile, httpGet, writeFile, jsonParse } = require('./actions')
+const { readFile, httpGet, writeFile, jsonParse } = require('effects-as-data/node')
 const { isInvalidGender } = require('./util')
 
 function * getUser (gender) {
